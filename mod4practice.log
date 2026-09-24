@@ -1,0 +1,129 @@
+mysql> DESCRIBE Console; DESCRIBE TradeIn;
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| ConsoleID    | int          | NO   | PRI | NULL    | auto_increment |
+| ConsoleName  | varchar(100) | YES  |     | NULL    |                |
+| Manufacturer | varchar(100) | YES  |     | NULL    |                |
+| ReleaseYear  | int          | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+4 rows in set (0.00 sec)
+
++--------------+--------------+------+-----+---------+----------------+
+| Field        | Type         | Null | Key | Default | Extra          |
++--------------+--------------+------+-----+---------+----------------+
+| TradeInID    | int          | NO   | PRI | NULL    | auto_increment |
+| GameID       | int          | YES  | MUL | NULL    |                |
+| CustomerName | varchar(100) | YES  |     | NULL    |                |
+| TradeInDate  | date         | YES  |     | NULL    |                |
+| CreditAmount | decimal(6,2) | YES  |     | NULL    |                |
++--------------+--------------+------+-----+---------+----------------+
+5 rows in set (0.00 sec)
+
+mysql> SELECT * FROM Console WHERE ConsoleName = 'NIntendo 64';
++-----------+-------------+--------------+-------------+
+| ConsoleID | ConsoleName | Manufacturer | ReleaseYear |
++-----------+-------------+--------------+-------------+
+|         4 | Nintendo 64 | Nintendo     |        1996 |
++-----------+-------------+--------------+-------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT GameId, Title, Price FROM Game;
++--------+--------------------+-------+
+| GameId | Title              | Price |
++--------+--------------------+-------+
+|      1 | Chrono Trigger     |  0.00 |
+|      2 | Super Metroid      |  0.00 |
+|      4 | Street Fighter II  |  0.00 |
+|      5 | Sonic the Hedgehog |  0.00 |
+|      6 | Final Fantasy VII  |  0.00 |
+|      7 | Mega Man X         |  0.00 |
++--------+--------------------+-------+
+6 rows in set (0.00 sec)
+
+mysql> SET Price = 27.99 WHERE GameID = 5;
+ERROR 1193 (HY000): Unknown system variable 'Price'
+mysql> SET 'Price' = 27.99; WHERE GameID = 5;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ''Price' = 27.99' at line 1
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE GameID = 5' at line 1
+mysql> SET Price = 27.99; WHERE GameID = 5;
+ERROR 1193 (HY000): Unknown system variable 'Price'
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'WHERE GameID = 5' at line 1
+mysql> SET Price = 0:00 WHERE GameID = 5
+    -> exit
+    -> 
+    -> 
+    -> 
+    -> 
+    -> \c
+mysql> UPDATE Game SET Price = 27.99 WHERE GameID = 5;
+Query OK, 1 row affected (0.01 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+
+mysql> SELECT GameID, Title, Price FROM Game WHERE GameID = 5;
++--------+--------------------+-------+
+| GameID | Title              | Price |
++--------+--------------------+-------+
+|      5 | Sonic the Hedgehog | 27.99 |
++--------+--------------------+-------+
+1 row in set (0.00 sec)
+
+mysql> DELETE FROM Game WHERE Title = 'Street Fighter II';
+ERROR 1451 (23000): Cannot delete or update a parent row: a foreign key constraint fails (`retro_replay`.`TradeIn`, CONSTRAINT `TradeIn_ibfk_1` FOREIGN KEY (`GameID`) REFERENCES `Game` (`GameID`))
+mysql> SELECT GameID, Title FROM Game
+    -> \c
+mysql> SELECT GameID, Title FROM Game;
++--------+--------------------+
+| GameID | Title              |
++--------+--------------------+
+|      1 | Chrono Trigger     |
+|      2 | Super Metroid      |
+|      4 | Street Fighter II  |
+|      5 | Sonic the Hedgehog |
+|      6 | Final Fantasy VII  |
+|      7 | Mega Man X         |
++--------+--------------------+
+6 rows in set (0.01 sec)
+
+mysql> INSERT INTO TradeIn (GameID, CustomerName, TradeInDate, CreditAmount) VALUES (5, 'Rakelle", '2026-09-24', 10.00);
+    '> SELECT LAST_INSERT_ID();
+    '> \c
+    '> c\
+    '> ^C
+mysql> INSERT INTO TradeIN (GameID, CustomerName, TradeInDate, CreditAmount) VALUES (5, 'Rakelle', '09-24-2026', 10.00);
+ERROR 1146 (42S02): Table 'retro_replay.TradeIN' doesn't exist
+mysql> INSERT INTO TradeIn (GameID, CustomerName, TradeInDate, CreditAmount) VALUES (5, 'Rakelle', '09-24-2026', 10.00);
+ERROR 1292 (22007): Incorrect date value: '09-24-2026' for column 'TradeInDate' at row 1
+mysql> INSERT INTO TradeIn (GameID, CustomerName, TradeInDate, CreditAmount) VALUES (5, 'Rakelle', '2026-09-24', 10.00);
+Query OK, 1 row affected (0.00 sec)
+
+mysql> SELECT LAST_INSERT_ID();
++------------------+
+| LAST_INSERT_ID() |
++------------------+
+|                4 |
++------------------+
+1 row in set (0.00 sec)
+
+mysql> SELECT GameID, Title, Price, FROM Game WHERE Genre = 'RPG';
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'FROM Game WHERE Genre = 'RPG'' at line 1
+mysql> SELECT GameID, Title, Price FROM Game WHERE Genre = 'RPG';
++--------+-------------------+-------+
+| GameID | Title             | Price |
++--------+-------------------+-------+
+|      1 | Chrono Trigger    |  0.00 |
+|      6 | Final Fantasy VII |  0.00 |
++--------+-------------------+-------+
+2 rows in set (0.00 sec)
+
+mysql> UPDATE Game SET Price = Price - 5.00 WHERE Genre = 'RPG';
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> DELETE FROM TradeIn WHERE TradeInID = 4;
+Query OK, 1 row affected (0.01 sec)
+
+mysql> SELECT * FROM TradeIn WHERE TradeInID = 4;
+Empty set (0.00 sec)
+
+mysql> notee;
